@@ -1,0 +1,31 @@
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: policy-storage-service
+  namespace: {{ .Values.namespaces.policystorageservice}} 
+spec:
+  selector:
+    matchLabels:
+      app: policy-storage-service
+  jwtRules:
+  - issuer: {{ .Values.jwtRules.issuer}} 
+    jwksUri: {{ .Values.jwtRules.jwksUri}} 
+    forwardOriginalToken: true
+    
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: policy-storage-service
+  namespace: {{ .Values.namespaces.policystorageservice}} 
+spec:
+  selector:
+    matchLabels:
+      app: policy-storage-service
+  action: CUSTOM
+  provider:
+    name: accuknox-ext-authz-http
+  rules:
+  - to:
+    - operation:
+        paths: ["/policystorageservice/api/*"]

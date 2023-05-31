@@ -1,0 +1,34 @@
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: policymanagement
+  namespace: {{ .Values.namespaces.policymanagement}} 
+spec:
+  selector:
+    matchLabels:
+      app: policymanagement
+  jwtRules:
+  - issuer: {{ .Values.jwtRules.issuer}} 
+    jwksUri: {{ .Values.jwtRules.jwksUri}} 
+    
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: policymanagement
+  namespace: {{ .Values.namespaces.policymanagement}} 
+spec:
+  action: ALLOW
+  selector:
+    matchLabels:
+      app: policymanagement
+  action: CUSTOM
+  provider:
+    name: accuknox-ext-authz-http
+  rules:
+  - to:
+    - operation:
+        paths: ["/policymanagement/api/*"]
+  - to:
+    - operation:
+        paths: ["/policymanagement/v2/*"]

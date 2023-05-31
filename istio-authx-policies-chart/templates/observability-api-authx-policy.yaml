@@ -1,0 +1,33 @@
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: observability-api
+  namespace: {{ .Values.namespaces.observabilityapi}} 
+spec:
+  selector:
+    matchLabels:
+      app: observability-api
+  jwtRules:
+  - issuer: {{ .Values.jwtRules.issuer}} 
+    jwksUri: {{ .Values.jwtRules.jwksUri}} 
+    
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: observability-api
+  namespace: {{ .Values.namespaces.observabilityapi}} 
+spec:
+  selector:
+    matchLabels:
+      app: observability-api
+  action: CUSTOM
+  provider:
+    name: accuknox-ext-authz-http
+  rules:
+  - to:
+    - operation:
+        paths: ["/observabilityapi/api/*"]
+  - to:
+    - operation:
+        paths: ["/observabilityapi/v2/*"]

@@ -1,0 +1,31 @@
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: usermanagement
+  namespace: {{ .Values.namespaces.usermanagement}} 
+spec:
+  selector:
+    matchLabels:
+      app: user-management-service
+  jwtRules:
+  - issuer: {{ .Values.jwtRules.issuer}} 
+    jwksUri: {{ .Values.jwtRules.jwksUri}} 
+    forwardOriginalToken: true
+    
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: usermanagement
+  namespace: {{ .Values.namespaces.usermanagement}} 
+spec:
+  selector:
+    matchLabels:
+      app: user-management-service
+  action: CUSTOM
+  provider:
+    name: accuknox-ext-authz-http
+  rules:
+  - to:
+    - operation:
+        paths: ["/usermanagement/*"]

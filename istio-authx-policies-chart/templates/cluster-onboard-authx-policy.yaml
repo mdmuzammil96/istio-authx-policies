@@ -1,0 +1,30 @@
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: cluster-onboarding-service
+  namespace: {{ .Values.namespaces.clusteronboardingservice}} 
+spec:
+  selector:
+    matchLabels:
+      app: cluster-onboarding-service
+  jwtRules:
+  - issuer: {{ .Values.jwtRules.issuer}} 
+    jwksUri: {{ .Values.jwtRules.jwksUri}} 
+
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: cluster-onboarding-service
+  namespace: {{ .Values.namespaces.clusteronboardingservice}} 
+spec:
+  selector:
+    matchLabels:
+      app: cluster-onboarding-service
+  action: CUSTOM
+  provider:
+    name: accuknox-ext-authz-http
+  rules:
+  - to:
+    - operation:
+        paths: ["/cluster-onboarding/api/*"]

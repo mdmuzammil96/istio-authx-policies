@@ -1,0 +1,772 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rules
+  namespace: {{ .Values.namespaces.istioextauthz}} 
+data:
+  rules.yaml: |-
+    version: v0.1
+    rules: 
+    # Cluster Manager AuthX rules
+    - base: /cm/api/v1
+      methods:
+      - GET
+      paths:
+      - /cluster-management/namespace/*
+      - /cluster-management/workloads
+      roles:
+      - get_all_clusters
+    - base: /cm
+      methods:
+      - POST
+      paths:
+      - /api/v1/cluster-management/retrieve-pods-and-its-nodes
+      - /api/v1/cluster-management/retrieve-node-list
+      - /api/v1/cluster-management/list-labels-of-entity
+      - /api/v1/cluster-management/add-labels-of-entities
+      - /api/v1/cluster-management/list-cloud-provider-cluster-locations/*
+      - /api/v1/cluster-management/clusters-in-workspace
+      - /api/v1/cluster-management/clusters-in-workspace-filter
+      - /api/v1/cluster-management/get-cluster-names
+      - /api/v1/cluster-management/get-endpoints-details
+      - /api/v1/cluster-management/get-service-details
+      - /api/v1/cluster-management/get-cluster-ids
+      - /api/v1/cluster-management/delete-clusters
+      - /api/v1/vm-management/vm-navbar
+      - /api/v1/vm-management/search-navbar
+      - /api/v1/vm-management/list-processes
+      - /api/v1/cluster-management/workload-type-update
+      - /api/v1/cluster-management/get-cluster-entity-info
+      - /api/v1/cluster-management/get-all-clusters-in-workspace
+      - /api/v1/cluster-management/store-posture
+      - /api/v1/cluster-management/all-namespaces
+      - /api/v1/cluster-management/pods-in-node-filter
+      - /api/v1/cluster-management/namespace-details
+      - /api/v1/cluster-management/nodes-in-cluster
+      - /api/v1/cluster-management/nodes-in-cluster-filter
+      - /api/v1/cluster-management/node-pod-of-container
+      - /api/v1/cluster-management/get-pods
+      - /api/v1/cluster-management/get-pod-meta-data-count
+      - /api/v1/cluster-management/containers-in-pod-filter
+      - /api/v1/cluster-management/containers-in-pod
+      - /api/v1/cluster-management/get-all-container-in-pod
+      - /api/v1/cluster-management/pods-in-node
+      - /api/v1/cluster-management/get-all-pod-in-node
+      - /v2/get-clusters
+      - /v2/get-pods
+      roles:
+      - get_all_clusters
+    - base: /cm
+      methods:
+      - POST
+      paths:
+      - /api/v1/cluster-management/get-cluster-names
+      - /api/v1/cluster-management/containers-in-pod
+      - /api/v1/cluster-management/nodes-in-cluster
+      - /api/v1/cluster-management/get-service-details
+      - /api/v1/cluster-management/get-endpoints-details
+      - /api/v1/cluster-management/get-cluster-ids
+      - /api/v1/cluster-management/pods-in-node
+      - /api/v1/cluster-management/all-namespaces
+      - /api/v1/cluster-management/delete-clusters
+      roles:
+      - get_all_clusters
+
+    # Cluster onboarding AuthX rules
+    - base: /cluster-onboarding
+      methods:
+      - GET
+      paths:
+      - /swagger/*
+      roles:
+      - ""
+    - base: /cluster-onboarding/api/v1
+      methods:
+      - GET
+      paths:
+      - /list-agents
+      - /list-cloud-provider-cluster-locations/*
+      - /get-service-accounts
+      - /get-onboarded-clusters
+      roles:
+      - get_all_clusters
+    - base: /cluster-onboarding/api/v1
+      methods:
+      - POST
+      paths:
+      - /get-clusters
+      - /deboard-cluster
+      - /store-service-accounts
+      - /store-clusters
+      - /map-agents
+      roles:
+      - get_all_clusters
+    - base: /cluster-onboarding/api/v1
+      methods:
+      - PUT
+      paths:
+      - /update-service-accounts
+      roles:
+      - get_all_clusters
+    - base: /cluster-onboarding/api/v1
+      methods:
+      - DELETE
+      paths:
+      - /delete-service-accounts
+      roles:
+      - get_all_clusters
+
+    # Data Pipeline AuthX rules
+    - base: /datapipelineapi
+      methods:
+      - GET
+      paths:
+      - /swagger/*
+      roles:
+      - ""
+    - base: /datapipelineapi
+      methods:
+      - GET
+      paths:
+      - /swagger/*
+      roles:
+      - ""
+    - base: /datapipeline
+      methods:
+      - POST
+      paths:
+      - /v3/alerts/cilium
+      - /v3/alerts/kubearmor
+      - /v3/alerts/fields
+      - /v3/alerts/kubearmor/count
+      - /v3/alerts/cilium/count
+      roles:
+      - get_datapipeline_telemetry
+    - base: /dashboards/v1/telemetry/system
+      methods:
+      - POST
+      paths:
+      - /pods/count
+      - /namespaces/count
+      - /clusters/count
+      - /clusters/actions/count
+      roles:
+      - get_datapipeline_telemetry
+    - base: /datapipelineapi
+      methods:
+      - POST
+      paths:
+      - /fetchFilters
+      - /filterTriggers
+      - /predefinedFilters
+      roles:
+      - get_datapipeline_filters
+    - base: /datapipelineapi
+      methods:
+      - POST
+      paths:
+      - /saveFilters
+      roles:
+      - save_datapipeline_filters
+    - base: /datapipelineapi
+      methods:
+      - POST
+      paths:
+      - /editFilters
+      roles:
+      - update_datapipeline_filters
+    - base: /datapipelineapi
+      methods:
+      - POST
+      paths:
+      - /deletefilters
+      roles:
+      - delete_datapipeline_filters
+    - base: /datapipelineapi
+      methods:
+      - POST
+      paths:
+      - /fetchTriggers
+      roles:
+      - get_datapipeline_triggers
+    - base: /datapipelineapi
+      methods:
+      - POST
+      paths:
+      - /createTriggers
+      roles:
+      - create_datapipeline_triggers
+    - base: /datapipelineapi
+      methods:
+      - POST
+      paths:
+      - /editTriggers
+      - /turnoffTriggers
+      roles:
+      - update_datapipeline_triggers
+    - base: /datapipelineapi
+      methods:
+      - POST
+      paths:
+      - /deletetriggers
+      roles:
+      - delete_datapipeline_triggers
+    - base: /datapipelineapi
+      methods:
+      - POST
+      paths:
+      - /sendTestMessageToSlack
+      - /sendTestMessageToSplunk
+      - /sendTestMessageToCloudwatch
+      - /sendTestMessageToRsyslog
+      roles:
+      - test_channel_integrations
+
+    # label management AuthX rules
+    - base: /labelmanagement
+      methods:
+      - GET
+      paths:
+      - /swagger/*
+      roles: 
+      - ""
+    - base: /labelmanagement/api
+      methods:
+      - POST
+      paths:
+      - /v1/label/get-label
+      - /v2/label/check-unique-name
+      roles: 
+      - cwpp_get_labels
+    - base: /labelmanagement/api
+      methods:
+      - POST
+      paths:
+      - /v1/label/create-label
+      roles: 
+      - cwpp_add_labels
+    - base: /labelmanagement/api
+      methods:
+      - POST
+      paths:
+      - /v1/label/edit-label
+      roles: 
+      - cwpp_edit_labels
+    - base: /labelmanagement/api
+      methods:
+      - POST
+      paths:
+      - /v1/label/delete-label
+      roles: 
+      - cwpp_delete_labels
+    - base: /labelmanagement/api
+      methods:
+      - POST
+      paths:
+      - /v1/label/get-label-with-entities
+      roles: 
+      - cwpp_get_label_entities
+    - base: /labelmanagement/api
+      methods:
+      - POST
+      paths:
+      - /v1/label/add-entities
+      roles: 
+      - cwpp_add_label_entities
+    - base: /labelmanagement/api
+      methods:
+      - POST
+      paths:
+      - /v1/label/delete-entities-with-label
+      roles: 
+      - cwpp_delete_label_entities
+    - base: /labelmanagement/api
+      methods:
+      - POST
+      paths:
+      - /v2/tag/get-tags
+      roles: 
+      - cwpp_get_tags
+    - base: /labelmanagement/api
+      methods:
+      - POST
+      paths:
+      - /v2/tag/add-tags
+      roles: 
+      - cwpp_add_tags
+    - base: /labelmanagement/api
+      methods:
+      - POST
+      paths:
+      - /v2/tag/delete-tag-with-policy
+      roles: 
+      - cwpp_delete_tags
+
+    # policymanagement AuthX rules
+    - base: /policymanagement
+      methods:
+      - GET
+      paths:
+      - /swagger/*
+      roles:
+      - ""
+    - base: /policymanagement/v2
+      methods:
+      - GET
+      paths:
+      - /policy/*/diff
+      - /policy/*/pending
+      - /policy/*/is_pending
+      - /policy/*
+      - /settings
+      roles:
+      - get_policy
+    - base: /policymanagement
+      methods:
+      - POST
+      paths:
+      - /dashboard/v2/policy-count
+      - /v2/policy-count
+      - /v2/list-policy
+      - /v2/policy/compare
+      - /api/v1/audit-log/get-list-of-policy-changes
+      - /api/v2/audit-log/get-compare-two-policies
+      - /api/v1/policy/review-policy-change
+      roles:
+      - get_policy
+    - base: /policymanagement
+      methods:
+      - POST
+      paths:
+      - /v2/policy
+      roles:
+      - add_policy
+    - base: /policymanagement/v2/policy
+      methods:
+      - POST
+      paths:
+      - /status
+      - /apply
+      roles:
+      - change_policy_status
+    - base: /policymanagement/v2/policy
+      methods:
+      - POST
+      paths:
+      - /ignore
+      roles:
+      - ignore_policy
+    - base: /policymanagement/v2/policy
+      methods:
+      - POST
+      paths:
+      - /approve
+      roles:
+      - approve_policy
+    - base: /policymanagement/v2/policy
+      methods:
+      - POST
+      paths:
+      - /discovered/update
+      roles:
+      - edit_policy
+    - base: /policymanagement/v2
+      methods:
+      - PUT
+      paths:
+      - /policy
+      roles:
+      - edit_policy
+    - base: /policymanagement/v2
+      methods:
+      - DELETE
+      paths:
+      - /policy
+      roles:
+      - delete_policy
+
+    # usermanagement AuthX rules
+    - base: /usermanagement
+      methods:
+      - POST
+      paths:
+      - /v2/tenant
+      roles:
+      - cspm_backend
+    - base: /usermanagement
+      methods:
+      - DELETE
+      paths:
+      - /v2/tenant/*
+      roles:
+      - cspm_backend
+    - base: /usermanagement
+      methods:
+      - GET
+      paths:
+      - /api/v1/workspaces/get-ws-details
+      roles:
+      - get_ws_details
+    - base: /usermanagement
+      methods:
+      - GET
+      paths:
+      - /api/v1/workspaces/get-roles
+      - /api/v1/workspaces/get-high-level-modular-roles
+      - /api/v1/workspaces/get-all-modular-roles
+      - /api/v1/workspaces/get-modular-roles
+      - /api/v1/workspaces/get-modular-granular-roles
+      roles:
+      - get_roles
+    - base: /usermanagement
+      methods:
+      - POST
+      paths:
+      - /api/v1/workspaces/create-high-level-role
+      - /api/v1/workspaces/create-modular-role
+      roles:
+      - create_roles
+    - base: /usermanagement
+      methods:
+      - PUT
+      paths:
+      - /api/v1/workspaces/update-high-level-role
+      - /api/v1/workspaces/update-modular-role
+      roles:
+      - update_roles
+    - base: /usermanagement
+      methods:
+      - DELETE
+      paths:
+      - /api/v1/workspaces/delete-high-level-role
+      - /api/v1/workspaces/delete-modular-role
+      roles:
+      - delete_roles
+    - base: /usermanagement
+      methods:
+      - GET
+      paths:
+      - /api/v1/workspaces/get-users
+      - /api/v1/workspaces/get-deactivated-users
+      - /api/v1/workspaces/get-pending-invites-users
+      roles:
+      - get_ws_users
+    - base: /usermanagement
+      methods:
+      - POST
+      paths:
+      - /api/v1/workspaces/create-user
+      roles:
+      - create_users
+    - base: /usermanagement
+      methods:
+      - PUT
+      paths:
+      - /api/v1/workspaces/edit-user
+      roles:
+      - edit_users
+    - base: /usermanagement
+      methods:
+      - DELETE
+      paths:
+      - /api/v1/workspaces/delete
+      - /api/v1/users/delete
+      roles:
+      - delete_users
+    - base: /usermanagement
+      methods:
+      - GET
+      paths:
+      - /api/v1/users/get-profile
+      roles:
+      - get_user_profile
+    - base: /usermanagement
+      methods:
+      - PUT
+      paths:
+      - /api/v1/users/update-profile
+      - /api/v1/users/update-password
+      roles:
+      - update_user_profile
+    - base: /usermanagement
+      methods:
+      - POST
+      paths:
+      - /api/v1/workspaces/invite-user
+      - /api/v1/workspaces/bulk-invite
+      roles:
+      - invite_users
+    - base: /usermanagement
+      methods:
+      - PUT
+      paths:
+      - /api/v1/workspaces/activate-users
+      roles:
+      - activate_users
+    - base: /usermanagement
+      methods:
+      - PUT
+      paths:
+      - /api/v1/workspaces/deactivate-users
+      roles:
+      - deactivate_users
+    - base: /usermanagement
+      methods:
+      - PUT
+      paths:
+      - /api/v1/workspaces/cancel-invite
+      roles:
+      - cancel_invites
+    - base: /usermanagement
+      methods:
+      - GET
+      - PUT
+      - POST
+      paths:
+      - /api/v1/auth/register/user
+      - /api/v1/auth/login
+      - /api/v1/auth/logout
+      - /api/v1/auth/access-token
+      - /api/v1/users/create-workspace
+      - /api/v1/workspaces/role-mapping
+      - /api/v1/workspaces/verify-user
+      - /api/v1/workspaces/verify-workspace-user
+      - /api/v1/auth/forgot-password
+      - /api/v1/auth/verify-token
+      - /api/v1/auth/reset-password
+      - /api/v1/accept-invite
+      - /api/v1/get-usernames
+      - /api/v1/users/workspaces
+      - /api/v1/users/get-profile
+      - /api/v1/accept-mail
+      - /api/v1/workspaces/get-granular-roles
+      - /api/v1/domain/save-domain
+      - /api/v1/domain/global-repo-details
+      - /api/v1/domain/workspace-level-repo
+      - /api/v1/workspaces/get-ws-creator
+      - /api/v1/domain/list-repo
+      - /api/v1/workspaces/edit-wsrepo-details
+      - /api/v1/domain/create-workspace
+      - /api/v1/workspaces/update-workspace
+      - /api/v1/workspaces/delete-workspace
+      - /api/v1/workspaces/update-repo
+      - /api/v1/workspaces/delete-repo
+      roles:
+      - ""
+
+    # vulnerability service AuthX rules
+    - base: /vulnerabilityservice/api
+      methods:
+      - POST
+      paths:
+      - /v1/registry/get-registry
+      - /v1/registry/get-registry-type
+      - /v1/registry/get-list-of-registry
+      - /v1/registry/get-list-of-regions
+      - /v1/registry/get-list-of-regions
+      roles:
+      - cwpp_get_registry
+    - base: /vulnerabilityservice/api
+      methods:
+      - POST
+      paths:
+      - /v1/registry/add-registry
+      - /v1/registry/save-adhoc-images
+      roles:
+      - cwpp_add_registry
+    - base: /vulnerabilityservice/api
+      methods:
+      - POST
+      paths:
+      - /v1/registry/edit-registry
+      - /v1/registry/change-status-registry
+      roles:
+      - cwpp_edit_registry
+    - base: /vulnerabilityservice/api
+      methods:
+      - POST
+      paths:
+      - /v1/registry/validate-registry-creds
+      roles:
+      - cwpp_add_registry
+      - cwpp_edit_registry
+    - base: /vulnerabilityservice/api
+      methods:
+      - POST
+      paths:
+      - /v1/registry/delete-registry
+      roles:
+      - cwpp_delete_registry
+    - base: /vulnerabilityservice/api
+      methods:
+      - POST
+      paths:
+      - /v1/dashboard/get-dashboard
+      - /v1/dashboard/get-image-risk-counts
+      - /v1/dashboard/get-security-issues
+      - /v1/dashboard/get-list-of-filter
+      - /v1/dashboard/get-list-of-vulnerabilities
+      - /v1/dashboard/get-list-of-images
+      roles:
+      - cwpp_get_registry_scans
+
+
+    # policy storage service AuthX rules
+    - base: /policystorageservice
+      methods:
+      - GET
+      paths:
+      - /api/v1/policy/clusters/*
+      roles:
+      - get_all_clusters
+    - base: /policystorageservice
+      methods:
+      - GET
+      paths:
+      - /api/v1/policy/tags/*
+      roles:
+      - cwpp_get_tags
+    - base: /policystorageservice
+      methods:
+      - GET
+      paths:
+      - /api/v1/policy/*
+      roles:
+      - get_policy
+    - base: /policystorageservice
+      methods:
+      - POST
+      paths:
+      - /api/v1/policy/namespaces
+      - /api/v1/policy/vminstance
+      - /api/v1/policy/vminstancegroup
+      roles:
+      - get_all_clusters
+    - base: /policystorageservice
+      methods:
+      - POST
+      paths:
+      - /api/v1/policy/labels
+      roles:
+      - cwpp_get_labels
+    - base: /policystorageservice
+      methods:
+      - POST
+      paths:
+      - /api/v1/policy/policies
+      - /api/v1/policy/download
+      roles:
+      - get_policy
+    - base: /policystorageservice
+      methods:
+      - POST
+      paths:
+      - /api/v1/policy/tag
+      roles:
+      - cwpp_add_tags
+    - base: /policystorageservice
+      methods:
+      - POST
+      paths:
+      - /api/v1/policy/store
+      - /api/v1/policy/apply-policy
+      roles:
+      - add_policy
+    - base: /policystorageservice
+      methods:
+      - POST
+      paths:
+      - /api/v1/policy/update
+      roles:
+      - edit_policy
+    - base: /policystorageservice
+      methods:
+      - POST
+      paths:
+      - /api/v1/policy/delete
+      roles:
+      - delete_policy
+
+    # observability-api AuthX rules
+    - base: /observabilityapi
+      methods:
+      - GET
+      paths:
+      - /v2/keys
+      roles:
+      - get_app_behavior
+    - base: /observabilityapi
+      methods:
+      - POST
+      paths:
+      - /api/v1/obs/get-total-counts
+      - /api/v1/obs/get-network-observability
+      - /api/v1/obs/get-file-observability
+      - /api/v1/obs/get-process-observability
+      - /api/v1/obs/get-network-observability-graph
+      - /api/v1/obs/get-network-observability-process-graph
+      - /api/v1/obs/get-top-ingress-egress
+      - /v2/get-network-observability
+      - /v2/get-file-observability
+      - /v2/get-process-observability
+      - /v2/get-network-observability-graph
+      - /v2/get-network-observability-process-graph
+      - /v2/get-values
+      - /v2/get-count
+      roles:
+      - get_app_behavior
+
+    # channel-integration AuthX rules
+    - base: /integrations/v3
+      methods:
+      - POST
+      paths:
+      - /getintegrations
+      - /getintegrationdetails
+      - /listchannels
+      roles:
+      - get_channel_integrations
+    - base: /integrations/v3
+      methods:
+      - POST
+      paths:
+      - /jira
+      - /slack
+      - /splunk
+      - /rsyslog
+      - /cloudwatchlogs
+      - /webhook
+      roles:
+      - save_channel_integrations
+    - base: /integrations/v3
+      methods:
+      - POST
+      paths:
+      - /deleteintegration
+      roles:
+      - delete_channel_integrations
+    - base: /integrations/v3
+      methods:
+      - POST
+      paths:
+      - /triggers
+      - /filters
+      - /toggletrigger
+      roles:
+      - save_triggers_filters
+    - base: /integrations/v3
+      methods:
+      - POST
+      paths:
+      - /deletetriggers
+      - /deletefilters
+      roles:
+      - delete_triggers_filters
+    - base: /integrations/v3
+      methods:
+      - POST
+      paths:
+      - /gettriggers
+      - /getfilters
+      roles:
+      - get_triggers_filters 

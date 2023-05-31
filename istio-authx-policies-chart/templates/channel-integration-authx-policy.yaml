@@ -1,0 +1,31 @@
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: channel-integration
+  namespace: {{ .Values.namespaces.channelintegration}} 
+spec:
+  selector:
+    matchLabels:
+      app: channel-integration
+  jwtRules:
+  - issuer: {{ .Values.jwtRules.issuer}} 
+    jwksUri: {{ .Values.jwtRules.jwksUri}} 
+
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: channel-integration
+  namespace: {{ .Values.namespaces.channelintegration}}
+spec:
+  selector:
+    matchLabels:
+      app: channel-integration
+  action: CUSTOM
+  provider:
+    name: accuknox-ext-authz-http
+  rules:
+    - to:
+      - operation:
+          paths:
+          - "/integrations/v3/*"

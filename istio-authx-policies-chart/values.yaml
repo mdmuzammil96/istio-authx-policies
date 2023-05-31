@@ -1,0 +1,16 @@
+namespaces :
+  channelintegration : accuknox-dev-integration
+  clustermanagementservice: accuknox-dev-cluster-mgmt
+  clusteronboardingservice: accuknox-dev-cluster-onboard
+  datapipelineapi : accuknox-dev-datapipeline-api
+  istioextauthz : accuknox-dev-istio-ext-authz
+  labelmanagement : accuknox-dev-label-service
+  observabilityapi : accuknox-dev-observability-api
+  policymanagement : accuknox-dev-policy-service
+  policystorageservice : accuknox-dev-policy-storage-service
+  usermanagement : accuknox-dev-user-mgmt
+  vulnerabilityservice : accuknox-dev-vulnerability-service
+
+jwtRules:
+  issuer: cspm.dev.accuknox.com
+  jwksUri: https://cspm.dev.accuknox.com/api/v1/jwks/

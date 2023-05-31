@@ -1,0 +1,33 @@
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: cluster-management-service
+  namespace: {{ .Values.namespaces.clustermanagementservice}} 
+spec:
+  selector:
+    matchLabels:
+      app: cluster-management-service
+  jwtRules:
+  - issuer: {{ .Values.jwtRules.issuer}} 
+    jwksUri: {{ .Values.jwtRules.jwksUri}} 
+    
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: cluster-management-service
+  namespace: {{ .Values.namespaces.clustermanagementservice}} 
+spec:
+  selector:
+    matchLabels:
+      app: cluster-management-service
+  action: CUSTOM
+  provider:
+    name: accuknox-ext-authz-http
+  rules:
+  - to:
+    - operation:
+        paths: ["/cm/api/*"]
+  - to:
+    - operation:
+        paths: ["/cm/v2/*"]

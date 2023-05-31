@@ -1,0 +1,32 @@
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: datapipelineapi
+  namespace: {{ .Values.namespaces.datapipelineapi}} 
+spec:
+  selector:
+    matchLabels:
+      app: datapipelineapi
+  jwtRules:
+  - issuer: {{ .Values.jwtRules.issuer}} 
+    jwksUri: {{ .Values.jwtRules.jwksUri}} 
+
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: datapipelineapi
+  namespace: {{ .Values.namespaces.datapipelineapi}} 
+spec:
+  action: CUSTOM
+  provider:
+    name: accuknox-ext-authz-http
+  selector:
+    matchLabels:
+      app: datapipelineapi
+  rules:
+  - to:
+    - operation:
+        paths: ["/datapipeline/*"]
+        paths: ["/datapipelineapi/*"]
+        paths: ["/dashboards/*"]

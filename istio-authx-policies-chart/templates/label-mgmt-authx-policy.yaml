@@ -1,0 +1,30 @@
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: label-management
+  namespace: {{ .Values.namespaces.labelmanagement}} 
+spec:
+  selector:
+    matchLabels:
+      app: labelmanagement # need to change
+  jwtRules:
+  - issuer: {{ .Values.jwtRules.issuer}} 
+    jwksUri: {{ .Values.jwtRules.jwksUri}} 
+    
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: label-management
+  namespace: {{ .Values.namespaces.labelmanagement}} 
+spec:
+  selector:
+    matchLabels:
+      app: labelmanagement # need to change
+  action: CUSTOM
+  provider:
+    name: accuknox-ext-authz-http
+  rules:
+  - to:
+    - operation:
+        paths : ["/labelmanagement/api/*"]
